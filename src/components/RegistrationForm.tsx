@@ -19,8 +19,8 @@ const formSchema = z.object({
   phoneNumber: z.string().optional(),
   companyId: z.string().min(5, { message: "Company ID is required" }),
   employeesCount: z.string().min(1, { message: "Please select number of employees" }),
-  termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the terms and privacy policy" }),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and privacy policy",
   }),
 });
 
@@ -45,7 +45,7 @@ const RegistrationForm = () => {
       phoneNumber: '',
       companyId: '',
       employeesCount: '',
-      termsAccepted: false,
+      termsAccepted: false, // This is now allowed because we're using z.boolean() instead of z.literal(true)
     },
   });
 
