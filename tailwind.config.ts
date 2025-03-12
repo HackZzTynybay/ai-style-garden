@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,22 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				hr: {
+					blue: {
+						DEFAULT: '#1E40AF',
+						hover: '#1E3A8A',
+						light: '#3B82F6',
+					},
+					gray: {
+						light: '#F3F4F6',
+						text: '#374151',
+						subtext: '#6B7280',
+						border: '#D1D5DB',
+						placeholder: '#9CA3AF',
+					},
+					success: '#10B981',
+					error: '#EF4444',
 				}
 			},
 			borderRadius: {
@@ -89,6 +106,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			boxShadow: {
+				'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 			}
 		}
 	},
