@@ -60,11 +60,11 @@ const RegistrationForm = () => {
       // Prepare the data for the backend
       const userData = {
         firstName,
-        lastName,
+        lastName : "VAKITI",
         email: data.workEmail,
         phoneNumber: data.phoneNumber || undefined,
         jobTitle: data.jobTitle,
-        company: {
+        companyDetails: {
           name: data.companyName,
           companyId: data.companyId,
           employeesCount: data.employeesCount

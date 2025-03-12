@@ -13,10 +13,11 @@ exports.register = async (req, res, next) => {
       firstName, 
       lastName, 
       email, 
-      phoneNumber, 
-      companyId, 
-      employeesCount 
+      phoneNumber,
+      companyDetails 
     } = req.body;
+
+    const {companyId, employeesCount, name} = companyDetails;
 
     // Check if email already exists
     const existingUser = await User.findOne({ email });
@@ -31,7 +32,7 @@ exports.register = async (req, res, next) => {
     let company = await Company.findOne({ companyId });
     if (!company) {
       company = await Company.create({
-        name: `${firstName}'s Company`, // Default name, can be updated later
+        name: `${name}'s Company`, // Default name, can be updated later
         companyId,
         employeesCount
       });
