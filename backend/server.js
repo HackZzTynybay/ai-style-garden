@@ -19,7 +19,14 @@ const companyRoutes = require('./routes/companies');
 const app = express();
 
 // Body parser
-app.use(cors({ origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', credentials: true }));
+app.use(express.json());
+
+// Configure CORS to allow requests from the frontend
+app.use(cors({ 
+  origin: process.env.CLIENT_URL || 'http://localhost:8080', 
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
+  credentials: true 
+}));
 
 // Mount routers
 app.use('/api/auth', authRoutes);
