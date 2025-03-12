@@ -45,7 +45,7 @@ const RegistrationForm = () => {
       phoneNumber: '',
       companyId: '',
       employeesCount: '',
-      termsAccepted: false,
+      termsAccepted: true,
     },
   });
 
