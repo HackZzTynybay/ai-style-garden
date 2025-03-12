@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Eye, EyeOff } from 'lucide-react';
+import { authApi } from '@/utils/api';
 
 const formSchema = z.object({
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
@@ -45,18 +45,36 @@ const RegistrationForm = () => {
       phoneNumber: '',
       companyId: '',
       employeesCount: '',
-      termsAccepted: false, // This is now allowed because we're using z.boolean() instead of z.literal(true)
+      termsAccepted: false,
     },
   });
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      // In a real app, you would send this data to your backend
-      console.log('Form submitted:', data);
+      // Split fullName into firstName and lastName
+      const nameParts = data.fullName.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+      // Prepare the data for the backend
+      const userData = {
+        firstName,
+        lastName,
+        email: data.workEmail,
+        phoneNumber: data.phoneNumber || undefined,
+        jobTitle: data.jobTitle,
+        company: {
+          name: data.companyName,
+          companyId: data.companyId,
+          employeesCount: data.employeesCount
+        }
+      };
+
+      console.log('Submitting registration data:', userData);
       
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call the registration API
+      const response = await authApi.register(userData);
       
       toast({
         title: "Account information submitted",
@@ -65,10 +83,10 @@ const RegistrationForm = () => {
       
       // Navigate to email verification page
       navigate('/verify-email', { state: { email: data.workEmail } });
-    } catch (error) {
+    } catch (error: any) {
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: "Registration Error",
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {

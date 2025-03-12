@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Logo from '@/components/Logo';
+import { authApi } from '@/utils/api';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -44,15 +45,21 @@ const Login = () => {
   const onSubmit = async (data: FormData) => {
     setLoggingIn(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call login API
+      const response = await authApi.login({
+        email: data.email,
+        password: data.password
+      });
       
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in',
       });
       
-      // In a real app, redirect to dashboard after login
+      // In a real app, save token and redirect to dashboard
+      console.log('Login successful, token:', response.token);
+      
+      // For now, navigate to home
       navigate('/');
     } catch (error) {
       toast({

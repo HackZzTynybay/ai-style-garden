@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Logo from '@/components/Logo';
+import { authApi } from '@/utils/api';
 
 const formSchema = z.object({
   newEmail: z.string().email({ message: "Please enter a valid email address" }),
@@ -21,6 +21,7 @@ const EditEmail = () => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const currentEmail = location.state?.email || 'johndoe@company.com';
+  const userId = location.state?.userId;
 
   const {
     register,
@@ -36,8 +37,14 @@ const EditEmail = () => {
   const onSubmit = async (data: FormData) => {
     setSaving(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // If we have a userId, we're updating an existing user's email
+      if (userId) {
+        await authApi.updateEmail({ userId, email: data.newEmail });
+      } else {
+        // Otherwise, just simulate the email change for now
+        // In a real app, you'd save this to localStorage or context
+        console.log('Email updated from', currentEmail, 'to', data.newEmail);
+      }
       
       toast({
         title: 'Email updated',

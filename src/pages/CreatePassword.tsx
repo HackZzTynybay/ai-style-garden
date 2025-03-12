@@ -2,17 +2,22 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Check } from 'lucide-react';
 import Logo from '@/components/Logo';
+import { authApi } from '@/utils/api';
 
 const CreatePassword = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [creating, setCreating] = useState(false);
+  
+  // Get userId from location state
+  const userId = location.state?.userId;
 
   // Password strength requirements
   const hasMinimumLength = password.length >= 8;
@@ -74,18 +79,29 @@ const CreatePassword = () => {
       return;
     }
     
+    if (!userId) {
+      toast({
+        title: 'Error',
+        description: 'User information is missing. Please verify your email again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     setCreating(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await authApi.createPassword({
+        userId,
+        password
+      });
       
       toast({
         title: 'Password created',
         description: 'Your account has been set up successfully',
       });
       
-      // In a real app, redirect to dashboard
-      navigate('/');
+      // Navigate to login
+      navigate('/login');
     } catch (error) {
       toast({
         title: 'Error',
