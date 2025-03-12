@@ -54,45 +54,76 @@ export const fetchApi = async <T>(
   }
 };
 
+// Response type definitions
+export interface AuthResponse {
+  success: boolean;
+  token?: string;
+  userId?: string;
+  message?: string;
+}
+
 // API endpoints abstractions
 export const authApi = {
   register: (userData: any) => 
-    fetchApi('/auth/register', { method: 'POST', body: userData }),
+    fetchApi<AuthResponse>('/auth/register', { method: 'POST', body: userData }),
   
   login: (credentials: { email: string; password: string }) => 
-    fetchApi('/auth/login', { method: 'POST', body: credentials }),
+    fetchApi<AuthResponse>('/auth/login', { method: 'POST', body: credentials }),
   
   logout: () => 
-    fetchApi('/auth/logout', { method: 'GET' }),
+    fetchApi<AuthResponse>('/auth/logout', { method: 'GET' }),
   
   verifyEmail: (token: string) => 
-    fetchApi(`/auth/verify-email/${token}`, { method: 'GET' }),
+    fetchApi<AuthResponse>(`/auth/verify-email/${token}`, { method: 'GET' }),
   
   createPassword: (data: { userId: string; password: string }) => 
-    fetchApi('/auth/create-password', { method: 'PUT', body: data }),
+    fetchApi<AuthResponse>('/auth/create-password', { method: 'PUT', body: data }),
   
   resendVerification: (email: string) => 
-    fetchApi('/auth/resend-verification', { method: 'POST', body: { email } }),
+    fetchApi<AuthResponse>('/auth/resend-verification', { method: 'POST', body: { email } }),
   
   updateEmail: (data: { userId: string; email: string }) => 
-    fetchApi('/auth/update-email', { method: 'PUT', body: data }),
+    fetchApi<AuthResponse>('/auth/update-email', { method: 'PUT', body: data }),
 };
+
+export interface UserResponse {
+  success: boolean;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+  message?: string;
+}
 
 export const userApi = {
   getCurrentUser: () => 
-    fetchApi('/users/me', { method: 'GET' }),
+    fetchApi<UserResponse>('/users/me', { method: 'GET' }),
   
   updateUser: (userData: any) => 
-    fetchApi('/users/me', { method: 'PUT', body: userData }),
+    fetchApi<UserResponse>('/users/me', { method: 'PUT', body: userData }),
   
   updatePassword: (data: { currentPassword: string; newPassword: string }) => 
-    fetchApi('/users/password', { method: 'PUT', body: data }),
+    fetchApi<AuthResponse>('/users/password', { method: 'PUT', body: data }),
 };
+
+export interface CompanyResponse {
+  success: boolean;
+  data: {
+    id: string;
+    name: string;
+    industry: string;
+    size: string;
+    location: string;
+  };
+  message?: string;
+}
 
 export const companyApi = {
   getCompany: (id: string) => 
-    fetchApi(`/companies/${id}`, { method: 'GET' }),
+    fetchApi<CompanyResponse>(`/companies/${id}`, { method: 'GET' }),
   
   updateCompany: (id: string, companyData: any) => 
-    fetchApi(`/companies/${id}`, { method: 'PUT', body: companyData }),
+    fetchApi<CompanyResponse>(`/companies/${id}`, { method: 'PUT', body: companyData }),
 };
