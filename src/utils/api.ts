@@ -1,7 +1,7 @@
 
 import { toast } from "@/hooks/use-toast";
 
-const API_URL = 'https://easyhrbackend-qfrfruebh-manoj8374s-projects.vercel.app/api';
+const API_URL = 'https://easyhrbackend-ikc195bat-manoj8374s-projects.vercel.app/api';
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -9,7 +9,6 @@ interface FetchOptions {
   method: RequestMethod;
   headers?: Record<string, string>;
   body?: any;
-  withCredentials?: boolean;
 }
 
 /**
@@ -19,7 +18,7 @@ export const fetchApi = async <T>(
   endpoint: string, 
   options: FetchOptions = { method: 'GET' }
 ): Promise<T> => {
-  const { method, body, withCredentials = true } = options;
+  const { method, body } = options;
   
   let headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -29,7 +28,6 @@ export const fetchApi = async <T>(
   const config: RequestInit = {
     method,
     headers,
-    credentials: withCredentials ? 'include' : 'omit',
     body: body ? JSON.stringify(body) : undefined,
   };
 
