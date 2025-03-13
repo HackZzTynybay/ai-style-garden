@@ -7,7 +7,7 @@ const {
   verifyEmail,
   createPassword,
   resendVerification,
-  updateEmail
+  updateEmail, getSampleData
 } = require('../controllers/auth');
 
 const router = express.Router();
@@ -15,6 +15,7 @@ const router = express.Router();
 const { protect } = require('../middleware/auth');
 
 router.post('/register', register);
+router.get("/getSampleData", getSampleData);
 router.post('/login', login);
 router.get('/logout', protect, logout);
 router.get('/verify-email/:token', verifyEmail);

@@ -21,11 +21,10 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// Configure CORS to allow requests from the frontend
-app.use(cors({ 
-  origin: process.env.CLIENT_URL || 'http://localhost:8080', 
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
-  credentials: true 
+app.use(cors({
+  origin: 'http://localhost:8080',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true
 }));
 
 // Mount routers

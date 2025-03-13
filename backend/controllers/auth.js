@@ -358,3 +358,13 @@ const sendTokenResponse = (user, statusCode, res) => {
     }
   });
 };
+
+
+exports.getSampleData = (req, res, next)=>{
+  res.status(200).json({
+    success:true,
+    data: {
+      message: "Hello Everyone"
+    }
+  })
+}
