@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -32,9 +33,9 @@ const VerifyEmail = () => {
         description: 'Your email has been successfully verified.',
       });
       
-      // Navigate to create password page
-      navigate('/create-password', { 
-        state: { userId: response.userId }
+      // Navigate to welcome page after successful verification
+      navigate('/welcome', { 
+        state: { userId: response.userId, email: email }
       });
     } catch (error) {
       toast({

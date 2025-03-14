@@ -9,6 +9,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import EditEmail from "./pages/EditEmail";
 import CreatePassword from "./pages/CreatePassword";
 import Login from "./pages/Login";
+import Welcome from "./pages/Welcome";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/edit-email" element={<EditEmail />} />
           <Route path="/create-password" element={<CreatePassword />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
