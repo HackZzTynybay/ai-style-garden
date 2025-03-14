@@ -50,11 +50,9 @@ exports.register = async (req, res, next) => {
       // password: crypto.randomBytes(10).toString('hex') // Temporary password
     });
 
-    // Get email verification token
     const verificationToken = user.getEmailVerificationToken();
     await user.save({ validateBeforeSave: false });
 
-    // Create verification URL
     const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
 
     const message = `
@@ -90,7 +88,6 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.verifyEmail = async (req, res, next) => {
   try {
-    // Get hashed token
     const emailVerificationToken = crypto
       .createHash('sha256')
       .update(req.params.token)
@@ -108,7 +105,6 @@ exports.verifyEmail = async (req, res, next) => {
       });
     }
 
-    // Set email as verified
     user.isEmailVerified = true;
     user.emailVerificationToken = undefined;
     user.emailVerificationTokenExpire = undefined;
@@ -137,7 +133,6 @@ exports.createPassword = async (req, res, next) => {
   try {
     const { userId, password } = req.body;
 
-    // Find the user
     const user = await User.findById(userId);
 
     if (!user) {
@@ -154,7 +149,6 @@ exports.createPassword = async (req, res, next) => {
       });
     }
 
-    // Set the new password
     user.password = password;
     await user.save();
 
@@ -178,7 +172,6 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validate email & password
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -186,7 +179,6 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Check for user
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
@@ -196,7 +188,6 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Check if email is verified
     if (!user.isEmailVerified) {
       return res.status(401).json({
         success: false,
@@ -204,7 +195,6 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    // Check if password matches
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
@@ -247,11 +237,9 @@ exports.resendVerification = async (req, res, next) => {
       });
     }
 
-    // Get verification token
     const verificationToken = user.getEmailVerificationToken();
     await user.save({ validateBeforeSave: false });
 
-    // Create verification URL
     const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
     
     const message = `
@@ -286,7 +274,6 @@ exports.updateEmail = async (req, res, next) => {
   try {
     const { currentEmail, newEmail } = req.body;
 
-    // Find the user
     const user = await User.findOne({ email: currentEmail });
 
     if (!user) {
@@ -296,7 +283,6 @@ exports.updateEmail = async (req, res, next) => {
       });
     }
 
-    // Check if new email already exists
     const existingUser = await User.findOne({ email: newEmail });
     if (existingUser) {
       return res.status(400).json({
@@ -305,15 +291,12 @@ exports.updateEmail = async (req, res, next) => {
       });
     }
 
-    // Update email and reset verification status
     user.email = newEmail;
     user.isEmailVerified = false;
     
-    // Get verification token
     const verificationToken = user.getEmailVerificationToken();
     await user.save({ validateBeforeSave: false });
 
-    // Create verification URL
     const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
     
     const message = `

@@ -63,7 +63,6 @@ exports.updateCompany = async (req, res, next) => {
       });
     }
 
-    // Check user is company admin
     if (req.user.company.toString() !== req.params.id && req.user.role !== 'admin') {
       return res.status(401).json({
         success: false,

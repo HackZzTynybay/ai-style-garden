@@ -15,6 +15,7 @@ const VerifyEmail = () => {
 
   // Redirect if email is not in state
   useEffect(() => {
+    console.log(email)
     if (!email) {
       toast({
         title: 'Missing information',
