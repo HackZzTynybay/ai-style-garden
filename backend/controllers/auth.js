@@ -47,7 +47,7 @@ exports.register = async (req, res, next) => {
       email,
       phoneNumber,
       company: company._id,
-      password: "Manoj"
+      password: "Manoj@8374"
       // password: crypto.randomBytes(10).toString('hex') // Temporary password
     });
 
