@@ -1,20 +1,14 @@
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import RegistrationForm from '@/components/RegistrationForm';
 
 const Index = () => {
   const navigate = useNavigate();
   
-  useEffect(() => {
-    // Redirect to the registration form
-    navigate('/');
-  }, [navigate]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-hr-gray-light">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold mb-4">Redirecting...</h1>
-      </div>
+    <div className="min-h-screen bg-hr-gray-light">
+      <RegistrationForm />
     </div>
   );
 };
