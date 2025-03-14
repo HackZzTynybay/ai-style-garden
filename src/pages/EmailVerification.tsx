@@ -12,6 +12,8 @@ const EmailVerification = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
     const verifyEmailToken = async () => {
@@ -21,16 +23,28 @@ const EmailVerification = () => {
       }
 
       try {
-        await authApi.verifyEmail(token);
+        const response = await authApi.verifyEmail(token);
         setVerificationStatus('success');
+        setUserId(response.userId || null);
+        setEmail(response.email || null);
         
         toast({
           title: 'Email Verified',
           description: 'Your email has been successfully verified.',
         });
         
+        // Redirect after 2 seconds
         setTimeout(() => {
-          navigate('/login');
+          if (response.userId && response.email) {
+            navigate('/create-password', { 
+              state: { 
+                userId: response.userId,
+                email: response.email
+              } 
+            });
+          } else {
+            navigate('/login');
+          }
         }, 2000);
       } catch (error) {
         setVerificationStatus('error');
@@ -72,7 +86,7 @@ const EmailVerification = () => {
               <Alert>
                 <AlertTitle>Redirecting...</AlertTitle>
                 <AlertDescription>
-                  You will be redirected to the login page in a moment.
+                  You will be redirected to create your password in a moment.
                 </AlertDescription>
               </Alert>
             </div>

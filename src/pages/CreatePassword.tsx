@@ -20,17 +20,17 @@ const CreatePassword = () => {
   const userId = location.state?.userId;
   const email = location.state?.email;
   
-  // Redirect if no userId is present
+  // Redirect if no userId or email is present
   useEffect(() => {
-    if (!userId) {
+    if (!userId || !email) {
       toast({
-        title: 'Error',
-        description: 'Missing user information. Please verify your email first.',
+        title: 'Missing information',
+        description: 'Please verify your email first',
         variant: 'destructive',
       });
-      navigate('/');
+      navigate('/login');
     }
-  }, [userId, navigate, toast]);
+  }, [userId, email, navigate, toast]);
 
   // Password strength requirements
   const hasMinimumLength = password.length >= 8;
@@ -124,6 +124,11 @@ const CreatePassword = () => {
       setCreating(false);
     }
   };
+
+  // Don't render content if userId is missing
+  if (!userId || !email) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-hr-gray-light">

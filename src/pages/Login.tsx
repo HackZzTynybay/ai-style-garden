@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Logo from '@/components/Logo';
 import { authApi } from '@/utils/api';
+import { setCookie } from '@/utils/cookies';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -62,6 +63,13 @@ const Login = () => {
         email: data.email,
         password: data.password
       });
+      
+      // Store JWT token in cookies
+      if (response.token) {
+        // Store for 30 days if remember me is checked, otherwise 1 day
+        const cookieExpireDays = data.rememberMe ? 30 : 1;
+        setCookie('authToken', response.token, cookieExpireDays);
+      }
       
       toast({
         title: 'Welcome back!',

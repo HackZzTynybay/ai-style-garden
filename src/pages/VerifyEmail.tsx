@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -11,9 +11,23 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [resending, setResending] = useState(false);
-  const email = location.state?.email || 'your email';
+  const email = location.state?.email;
+
+  // Redirect if email is not in state
+  useEffect(() => {
+    if (!email) {
+      toast({
+        title: 'Missing information',
+        description: 'Please start from the registration page',
+        variant: 'destructive',
+      });
+      navigate('/login');
+    }
+  }, [email, navigate, toast]);
 
   const handleResendEmail = async () => {
+    if (!email) return;
+    
     setResending(true);
     try {
       await authApi.resendVerification(email);
@@ -36,6 +50,11 @@ const VerifyEmail = () => {
   const handleEditEmail = () => {
     navigate('/edit-email', { state: { email } });
   };
+
+  // Don't render content if email is missing
+  if (!email) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-hr-gray-light">
