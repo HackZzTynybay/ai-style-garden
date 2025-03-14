@@ -47,7 +47,8 @@ exports.register = async (req, res, next) => {
       email,
       phoneNumber,
       company: company._id,
-      password: crypto.randomBytes(10).toString('hex') // Temporary password
+      password: "Manoj"
+      // password: crypto.randomBytes(10).toString('hex') // Temporary password
     });
 
     // Get email verification token
