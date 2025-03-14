@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -20,23 +20,35 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const Login = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
+  
+  // Get email from location state if available
+  const emailFromState = location.state?.email || '';
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      email: emailFromState,
       password: '',
       rememberMe: false,
     },
   });
+  
+  // Set email from location state when component mounts
+  useEffect(() => {
+    if (emailFromState) {
+      setValue('email', emailFromState);
+    }
+  }, [emailFromState, setValue]);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -56,11 +68,16 @@ const Login = () => {
         description: 'You have successfully logged in',
       });
       
-      // In a real app, save token and redirect to dashboard
-      console.log('Login successful, token:', response.token);
+      // Store user data from response
+      const userData = {
+        id: response.user?.id,
+        firstName: response.user?.firstName,
+        lastName: response.user?.lastName,
+        email: response.user?.email
+      };
       
-      // For now, navigate to home
-      navigate('/');
+      // Navigate to welcome page
+      navigate('/welcome', { state: userData });
     } catch (error) {
       toast({
         title: 'Login failed',

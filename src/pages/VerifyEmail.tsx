@@ -37,8 +37,8 @@ const VerifyEmail = () => {
         description: 'Your email has been successfully verified.',
       });
       
-      // Navigate to welcome page after successful verification
-      navigate('/welcome', { 
+      // Navigate to create password page after successful verification
+      navigate('/create-password', { 
         state: { userId: response.userId, email: email }
       });
     } catch (error) {

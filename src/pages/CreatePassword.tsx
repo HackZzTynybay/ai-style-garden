@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,8 +16,21 @@ const CreatePassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [creating, setCreating] = useState(false);
   
-  // Get userId from location state
+  // Get userId and email from location state
   const userId = location.state?.userId;
+  const email = location.state?.email;
+  
+  // Redirect if no userId is present
+  useEffect(() => {
+    if (!userId) {
+      toast({
+        title: 'Error',
+        description: 'Missing user information. Please verify your email first.',
+        variant: 'destructive',
+      });
+      navigate('/');
+    }
+  }, [userId, navigate, toast]);
 
   // Password strength requirements
   const hasMinimumLength = password.length >= 8;
@@ -100,8 +113,8 @@ const CreatePassword = () => {
         description: 'Your account has been set up successfully',
       });
       
-      // Navigate to login
-      navigate('/login');
+      // Navigate to login with email pre-filled
+      navigate('/login', { state: { email } });
     } catch (error) {
       toast({
         title: 'Error',

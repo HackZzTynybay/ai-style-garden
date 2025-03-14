@@ -1,4 +1,3 @@
-
 import { toast } from "@/hooks/use-toast";
 
 const API_URL = 'https://ai-style-garden.onrender.com/api';
@@ -58,6 +57,13 @@ export interface AuthResponse {
   token?: string;
   userId?: string;
   message?: string;
+  user?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+  };
 }
 
 // API endpoints abstractions

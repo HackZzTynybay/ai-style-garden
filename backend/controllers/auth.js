@@ -134,10 +134,10 @@ exports.verifyEmail = async (req, res, next) => {
 // @access  Public
 exports.createPassword = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { userId, password } = req.body;
 
     // Find the user
-    const user = await User.findOne({ email });
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({
@@ -157,7 +157,10 @@ exports.createPassword = async (req, res, next) => {
     user.password = password;
     await user.save();
 
-    sendTokenResponse(user, 200, res);
+    res.status(200).json({
+      success: true,
+      message: 'Password created successfully'
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({
