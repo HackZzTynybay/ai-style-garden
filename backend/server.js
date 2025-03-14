@@ -16,16 +16,15 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const companyRoutes = require('./routes/companies');
 
+
 const app = express();
 
 // Body parser
 app.use(express.json());
-
 app.use(cors({
-  "origin": "*",
-  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-  "preflightContinue": false,
-  "optionsSuccessStatus": 204
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Mount routers

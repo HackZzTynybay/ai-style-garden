@@ -54,7 +54,7 @@ exports.register = async (req, res, next) => {
 
     // Create verification URL
     const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email/${verificationToken}`;
-    
+
     const message = `
       You are receiving this email because you need to confirm your email address. Please click the link below to verify:
       \n\n${verificationUrl}\n\n
@@ -66,10 +66,13 @@ exports.register = async (req, res, next) => {
       subject: 'Email Verification',
       message
     });
+    
+    await user.save();
 
     res.status(201).json({
       success: true,
-      message: 'Verification email sent'
+      message: 'Verification email sent',
+      additionalMessage: "Email send but verification is not needed for development purposes. will change it later."
     });
   } catch (err) {
     console.error(err);

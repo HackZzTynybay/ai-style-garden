@@ -1,7 +1,7 @@
 
 import { toast } from "@/hooks/use-toast";
 
-const API_URL = 'https://easyhrbackend-ikc195bat-manoj8374s-projects.vercel.app/api';
+const API_URL = 'http://localhost:5000/api';
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
