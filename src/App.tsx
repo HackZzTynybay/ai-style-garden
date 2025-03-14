@@ -23,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<RegistrationForm />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/edit-email" element={<EditEmail />} />
           <Route path="/create-password" element={<CreatePassword />} />
           <Route path="/login" element={<Login />} />

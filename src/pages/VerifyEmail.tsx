@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/Logo';
 import { authApi } from '@/utils/api';
@@ -11,14 +11,18 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const params = useParams();
   const [resending, setResending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const email = location.state?.email || 'your email';
-  const token = searchParams.get('token');
+  
+  // Check for token in URL params or search params
+  const token = params.token || searchParams.get('token');
 
   // If token is present in URL, verify email
   useEffect(() => {
     if (token) {
+      setVerifying(true);
       verifyEmail(token);
     }
   }, [token]);
@@ -43,7 +47,6 @@ const VerifyEmail = () => {
         description: 'The verification link is invalid or has expired.',
         variant: 'destructive',
       });
-    } finally {
       setVerifying(false);
     }
   };
