@@ -1,4 +1,3 @@
-
 const crypto = require('crypto');
 const User = require('../models/User');
 const Company = require('../models/Company');
@@ -119,7 +118,8 @@ exports.verifyEmail = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Email verified successfully',
-      userId: user._id  // Include userId in the response
+      userId: user._id,
+      email: user.email
     });
   } catch (err) {
     console.error(err);

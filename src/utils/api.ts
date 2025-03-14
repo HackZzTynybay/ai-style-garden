@@ -56,6 +56,7 @@ export interface AuthResponse {
   success: boolean;
   token?: string;
   userId?: string;
+  email?: string;
   message?: string;
   user?: {
     id: string;
