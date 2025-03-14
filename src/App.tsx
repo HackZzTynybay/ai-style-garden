@@ -9,6 +9,7 @@ import VerifyEmail from '@/pages/VerifyEmail';
 import EmailVerification from '@/pages/EmailVerification';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 function App() {
   return (
@@ -20,7 +21,14 @@ function App() {
               <Route path="/edit-email" element={<EditEmail />} />
               <Route path="/create-password" element={<CreatePassword />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/welcome" element={<Welcome />} />
+              <Route 
+                path="/welcome" 
+                element={
+                  <ProtectedRoute>
+                    <Welcome />
+                  </ProtectedRoute>
+                } 
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
     </div>

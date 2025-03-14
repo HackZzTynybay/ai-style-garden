@@ -1,17 +1,32 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { CheckCircle } from 'lucide-react';
+import { getCookie } from '@/utils/cookies';
 
 const Welcome = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState('User');
   
-  // Get user data from location state
-  const userData = location.state || {};
-  const firstName = userData.firstName || 'User';
+  // Get user data from location state or try to retrieve from localStorage
+  useEffect(() => {
+    const userData = location.state || {};
+    
+    if (userData.firstName) {
+      setFirstName(userData.firstName);
+    } else {
+      // If no user data in state, check if we have a token but no user info
+      const token = getCookie('authToken');
+      if (token && !userData.firstName) {
+        // Here you would ideally make an API call to get user data using the token
+        // For now, we'll just use generic greeting if we only have a token
+        setFirstName('User');
+      }
+    }
+  }, [location.state]);
   
   return (
     <div className="min-h-screen flex flex-col bg-hr-gray-light">
