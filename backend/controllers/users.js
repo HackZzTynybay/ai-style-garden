@@ -1,4 +1,3 @@
-
 const User = require('../models/User');
 
 // @desc    Get current logged in user
@@ -11,9 +10,29 @@ exports.getMe = async (req, res, next) => {
       select: 'name companyId employeesCount'
     });
 
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
     res.status(200).json({
       success: true,
-      data: user
+      data: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        phoneNumber: user.phoneNumber,
+        company: user.company ? {
+          id: user.company._id,
+          name: user.company.name,
+          companyId: user.company.companyId,
+          employeesCount: user.company.employeesCount
+        } : null
+      }
     });
   } catch (err) {
     console.error(err);

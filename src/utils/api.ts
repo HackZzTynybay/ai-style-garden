@@ -1,4 +1,5 @@
 import { toast } from "@/hooks/use-toast";
+import { getCookie } from "./cookies";
 
 const API_URL = 'https://ai-style-garden.onrender.com/api';
 
@@ -8,6 +9,7 @@ interface FetchOptions {
   method: RequestMethod;
   headers?: Record<string, string>;
   body?: any;
+  requiresAuth?: boolean;
 }
 
 /**
@@ -15,14 +17,22 @@ interface FetchOptions {
  */
 export const fetchApi = async <T>(
   endpoint: string, 
-  options: FetchOptions = { method: 'GET' }
+  options: FetchOptions = { method: 'GET', requiresAuth: false }
 ): Promise<T> => {
-  const { method, body } = options;
+  const { method, body, requiresAuth = false } = options;
   
   let headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...options.headers
   };
+  
+  // Add authorization header if token exists and request requires auth
+  if (requiresAuth) {
+    const token = getCookie('authToken');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
   
   const config: RequestInit = {
     method,
@@ -95,22 +105,39 @@ export interface UserResponse {
   success: boolean;
   data: {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     role: string;
+    company?: {
+      name: string;
+      companyId: string;
+      employeesCount: number;
+    };
   };
   message?: string;
 }
 
 export const userApi = {
   getCurrentUser: () => 
-    fetchApi<UserResponse>('/users/me', { method: 'GET' }),
+    fetchApi<UserResponse>('/users/me', { 
+      method: 'GET',
+      requiresAuth: true 
+    }),
   
   updateUser: (userData: any) => 
-    fetchApi<UserResponse>('/users/me', { method: 'PUT', body: userData }),
+    fetchApi<UserResponse>('/users/me', { 
+      method: 'PUT', 
+      body: userData,
+      requiresAuth: true 
+    }),
   
   updatePassword: (data: { currentPassword: string; newPassword: string }) => 
-    fetchApi<AuthResponse>('/users/password', { method: 'PUT', body: data }),
+    fetchApi<AuthResponse>('/users/password', { 
+      method: 'PUT', 
+      body: data,
+      requiresAuth: true 
+    }),
 };
 
 export interface CompanyResponse {

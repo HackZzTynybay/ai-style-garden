@@ -1,5 +1,5 @@
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '@/utils/cookies';
 
@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
+  const [isVerifying, setIsVerifying] = useState(true);
   
   useEffect(() => {
     // Check if token exists in cookies
@@ -17,8 +18,15 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     // If no token is found, redirect to login page
     if (!token) {
       navigate('/login', { replace: true });
+    } else {
+      setIsVerifying(false);
     }
   }, [navigate]);
+
+  // Don't render children until verification is complete
+  if (isVerifying) {
+    return null;
+  }
 
   return <>{children}</>;
 };

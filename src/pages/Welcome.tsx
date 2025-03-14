@@ -1,32 +1,46 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import { CheckCircle } from 'lucide-react';
 import { getCookie } from '@/utils/cookies';
+import { userApi } from '@/utils/api';
+import { toast } from '@/hooks/use-toast';
 
 const Welcome = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState('User');
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Get user data from location state or try to retrieve from localStorage
+  // Fetch user data using the auth token
   useEffect(() => {
-    const userData = location.state || {};
-    
-    if (userData.firstName) {
-      setFirstName(userData.firstName);
-    } else {
-      // If no user data in state, check if we have a token but no user info
-      const token = getCookie('authToken');
-      if (token && !userData.firstName) {
-        // Here you would ideally make an API call to get user data using the token
-        // For now, we'll just use generic greeting if we only have a token
-        setFirstName('User');
+    const fetchUserData = async () => {
+      try {
+        setIsLoading(true);
+        const token = getCookie('authToken');
+        
+        if (token) {
+          // Fetch user data from API using token
+          const response = await userApi.getCurrentUser();
+          if (response.success && response.data) {
+            setFirstName(response.data.firstName || 'User');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load user information',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
       }
-    }
-  }, [location.state]);
+    };
+
+    fetchUserData();
+  }, []);
   
   return (
     <div className="min-h-screen flex flex-col bg-hr-gray-light">
@@ -42,9 +56,13 @@ const Welcome = () => {
           
           <h1 className="text-2xl font-bold text-hr-gray-text mb-4">Welcome to EaseHR!</h1>
           
-          <p className="text-hr-gray-subtext mb-8">
-            Hi {firstName}, your account has been successfully set up. You can now start using the EaseHR platform to manage your HR needs.
-          </p>
+          {isLoading ? (
+            <p className="text-hr-gray-subtext mb-8">Loading your information...</p>
+          ) : (
+            <p className="text-hr-gray-subtext mb-8">
+              Hi {firstName}, your account has been successfully set up. You can now start using the EaseHR platform to manage your HR needs.
+            </p>
+          )}
           
           <div className="space-y-4">
             <Button
