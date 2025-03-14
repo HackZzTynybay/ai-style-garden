@@ -113,7 +113,6 @@ const CreatePassword = () => {
         description: 'Your account has been set up successfully',
       });
       
-      // Navigate to login with email pre-filled
       navigate('/login', { state: { email } });
     } catch (error) {
       toast({

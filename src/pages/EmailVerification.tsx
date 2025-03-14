@@ -24,13 +24,11 @@ const EmailVerification = () => {
         await authApi.verifyEmail(token);
         setVerificationStatus('success');
         
-        // Show success message
         toast({
           title: 'Email Verified',
           description: 'Your email has been successfully verified.',
         });
         
-        // Redirect to login page after 2 seconds
         setTimeout(() => {
           navigate('/login');
         }, 2000);
