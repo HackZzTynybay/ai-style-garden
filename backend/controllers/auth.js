@@ -7,6 +7,8 @@ const sendEmail = require('../utils/sendEmail');
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
+
+const clientUrl = "https://ai-style-garden.lovable.app"
 exports.register = async (req, res, next) => {
   try {
     const { 
@@ -53,7 +55,7 @@ exports.register = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     // Create verification URL
-    const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email/${verificationToken}`;
+    const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
 
     const message = `
       You are receiving this email because you need to confirm your email address. Please click the link below to verify:
@@ -245,7 +247,7 @@ exports.resendVerification = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     // Create verification URL
-    const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email/${verificationToken}`;
+    const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
     
     const message = `
       You are receiving this email because you need to confirm your email address. Please click the link below to verify:
@@ -307,7 +309,7 @@ exports.updateEmail = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     // Create verification URL
-    const verificationUrl = `${req.protocol}://${req.get('host')}/verify-email/${verificationToken}`;
+    const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
     
     const message = `
       You are receiving this email because you need to confirm your new email address. Please click the link below to verify:
@@ -334,9 +336,6 @@ exports.updateEmail = async (req, res, next) => {
   }
 };
 
-// @desc    Logout / clear cookie
-// @route   GET /api/auth/logout
-// @access  Private
 exports.logout = async (req, res, next) => {
   res.status(200).json({
     success: true,
@@ -344,9 +343,7 @@ exports.logout = async (req, res, next) => {
   });
 };
 
-// Helper function to get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
-  // Create token
   const token = user.getSignedJwtToken();
 
   res.status(statusCode).json({
