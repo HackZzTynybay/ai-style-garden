@@ -1,3 +1,4 @@
+
 import Index from '@/pages/Index';
 import Login from '@/pages/Login';
 import NotFound from '@/pages/NotFound';
@@ -7,11 +8,9 @@ import EditEmail from '@/pages/EditEmail';
 import VerifyEmail from '@/pages/VerifyEmail';
 import EmailVerification from '@/pages/EmailVerification';
 import React from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
-  const location = useLocation();
-
   return (
     <div className="bg-hr-gray-light">
             <Routes>
