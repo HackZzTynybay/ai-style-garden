@@ -1,15 +1,28 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import DepartmentSidebar from '@/components/DepartmentSidebar';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { Card, CardContent } from '@/components/ui/card';
+import { departmentApi } from '@/utils/api';
+import { useQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
 
 const SetupRoles = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  
+  // Fetch departments
+  const { data: departmentsData, isLoading } = useQuery({
+    queryKey: ['departments'],
+    queryFn: async () => {
+      const response = await departmentApi.getDepartments();
+      return response.data;
+    }
+  });
   
   return (
     <ProtectedRoute>
@@ -54,8 +67,44 @@ const SetupRoles = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-md p-6 flex items-center justify-center min-h-[250px]">
-                <p className="text-sm text-hr-gray-subtext">Roles and permissions setup will be implemented here</p>
+              <div className="bg-white rounded-md p-6">
+                {isLoading ? (
+                  <div className="flex justify-center items-center h-32">
+                    <p>Loading departments...</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-lg font-medium text-hr-gray-text">Department Roles</h2>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-4">
+                      {/* Department Cards */}
+                      {departmentsData && departmentsData.map((dept) => (
+                        <Card key={dept.id} className="border border-hr-gray-border w-[180px]">
+                          <CardContent className="p-4">
+                            <div>
+                              <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
+                              <p className="text-xs text-hr-gray-subtext mt-1">No roles assigned</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                      
+                      {/* Add Department Card */}
+                      <Card 
+                        className="border border-dashed border-hr-gray-border cursor-pointer hover:bg-gray-50 transition-colors w-[180px]"
+                      >
+                        <CardContent className="p-4 flex items-center justify-center">
+                          <button className="flex items-center gap-2 text-hr-gray-text">
+                            <Plus size={18} />
+                            <span>Add Role</span>
+                          </button>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
