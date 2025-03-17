@@ -86,51 +86,55 @@ const SetupDepartments = () => {
             </header>
           )}
           
-          <div className="max-w-4xl mx-auto mt-4 md:mt-8">
-            <h1 className="text-xl md:text-2xl font-semibold text-hr-gray-text">Set Up Your Departments</h1>
-            <p className="text-sm md:text-base text-hr-gray-subtext mt-1 mb-4 md:mb-6">Create and organize your company's department structure</p>
+          <div className="max-w-3xl mx-auto mt-4 md:mt-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+              <div>
+                <h1 className="text-xl md:text-2xl font-semibold text-hr-gray-text">Set Up Your Departments</h1>
+                <p className="text-sm text-hr-gray-subtext mt-1">Create and organize your company's department structure</p>
+              </div>
+              
+              <div className="flex mt-4 md:mt-0 space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={handleSkip}
+                  className="px-5 py-2 h-auto text-sm"
+                >
+                  Skip
+                </Button>
+                
+                <Button
+                  onClick={handleSaveAndNext}
+                  className="bg-hr-blue hover:bg-hr-blue-hover px-5 py-2 h-auto text-sm"
+                >
+                  Save & Next
+                </Button>
+              </div>
+            </div>
             
             {/* Departments Container */}
-            <div className="bg-white border border-hr-gray-border rounded-md p-4 md:p-6 min-h-[250px] md:min-h-[300px] mb-4 md:mb-6">
+            <div className="bg-white border border-hr-gray-border rounded-md p-6 min-h-[250px] mb-6">
               {departments.length > 0 ? (
-                <div className="space-y-3 md:space-y-4">
+                <div className="space-y-3 mb-6">
                   {departments.map(dept => (
                     <div key={dept.id} className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-hr-gray-border rounded-md">
                       <div>
                         <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
-                        {dept.email && <p className="text-xs md:text-sm text-hr-gray-subtext">{dept.email}</p>}
+                        {dept.email && <p className="text-xs text-hr-gray-subtext">{dept.email}</p>}
                       </div>
-                      {dept.lead && <div className="text-xs md:text-sm text-hr-gray-subtext mt-1 md:mt-0">Lead: {dept.lead}</div>}
+                      {dept.lead && <div className="text-xs text-hr-gray-subtext mt-1 md:mt-0">Lead: {dept.lead}</div>}
                     </div>
                   ))}
                 </div>
               ) : null}
               
+              {/* Add Department Button - Smaller */}
               <button 
                 onClick={() => setIsAddSheetOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 md:py-4 mt-4 text-hr-gray-text border border-dashed border-hr-gray-border rounded-md hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center gap-2 mx-auto py-2 px-4 text-hr-gray-text border border-dashed border-hr-gray-border rounded-md hover:bg-gray-50 transition-colors"
               >
-                <Plus size={isMobile ? 16 : 20} />
-                <span className="text-sm md:text-base">Add Department</span>
+                <Plus size={16} />
+                <span className="text-sm">Add Department</span>
               </button>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 md:gap-4">
-              <Button
-                variant="outline"
-                onClick={handleSkip}
-                className="px-4 md:px-8 text-sm md:text-base"
-              >
-                Skip
-              </Button>
-              
-              <Button
-                onClick={handleSaveAndNext}
-                className="bg-hr-blue hover:bg-hr-blue-hover px-4 md:px-8 text-sm md:text-base"
-              >
-                Save & Next
-              </Button>
             </div>
           </div>
         </div>
