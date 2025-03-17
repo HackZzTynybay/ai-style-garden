@@ -67,9 +67,9 @@ const Welcome = () => {
           <div className="space-y-4">
             <Button
               className="w-full bg-hr-blue hover:bg-hr-blue-hover text-white py-3 rounded-md font-medium"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/setup-departments')}
             >
-              Go to Dashboard
+              Set Up Your Company
             </Button>
             
             <Button

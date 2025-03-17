@@ -7,6 +7,9 @@ import CreatePassword from '@/pages/CreatePassword';
 import EditEmail from '@/pages/EditEmail';
 import VerifyEmail from '@/pages/VerifyEmail';
 import EmailVerification from '@/pages/EmailVerification';
+import SetupDepartments from '@/pages/SetupDepartments';
+import SetupRoles from '@/pages/SetupRoles';
+import SetupEmployees from '@/pages/SetupEmployees';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -26,6 +29,30 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Welcome />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/setup-departments" 
+                element={
+                  <ProtectedRoute>
+                    <SetupDepartments />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/setup-roles" 
+                element={
+                  <ProtectedRoute>
+                    <SetupRoles />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/setup-employees" 
+                element={
+                  <ProtectedRoute>
+                    <SetupEmployees />
                   </ProtectedRoute>
                 } 
               />
