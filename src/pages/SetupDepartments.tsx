@@ -70,120 +70,127 @@ const SetupDepartments = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-hr-gray-light">
-      {/* Sidebar */}
-      <DepartmentSidebar currentStep="departments" />
+    <div className="min-h-screen flex flex-col bg-hr-gray-light">
+      {/* Mobile Sidebar */}
+      {isMobile && <DepartmentSidebar currentStep="departments" />}
+      
+      <div className="flex flex-1 flex-col md:flex-row">
+        {/* Desktop Sidebar */}
+        {!isMobile && <DepartmentSidebar currentStep="departments" />}
 
-      {/* Main Content */}
-      <div className="flex-1 p-4 md:p-6 overflow-auto">
-        <header className="mb-4 md:mb-6">
-          <Logo />
-        </header>
-        
-        <div className="max-w-4xl mx-auto mt-4 md:mt-8">
-          <h1 className="text-xl md:text-2xl font-semibold text-hr-gray-text">Set Up Your Departments</h1>
-          <p className="text-sm md:text-base text-hr-gray-subtext mt-1 mb-4 md:mb-6">Create and organize your company's department structure</p>
+        {/* Main Content */}
+        <div className="flex-1 p-4 md:p-6 overflow-auto">
+          {isMobile && (
+            <header className="mb-4">
+              <Logo />
+            </header>
+          )}
           
-          {/* Departments Container */}
-          <div className="bg-white border border-hr-gray-border rounded-md p-4 md:p-6 min-h-[250px] md:min-h-[300px] mb-4 md:mb-6">
-            {departments.length > 0 ? (
-              <div className="space-y-3 md:space-y-4">
-                {departments.map(dept => (
-                  <div key={dept.id} className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-hr-gray-border rounded-md">
-                    <div>
-                      <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
-                      {dept.email && <p className="text-xs md:text-sm text-hr-gray-subtext">{dept.email}</p>}
+          <div className="max-w-4xl mx-auto mt-4 md:mt-8">
+            <h1 className="text-xl md:text-2xl font-semibold text-hr-gray-text">Set Up Your Departments</h1>
+            <p className="text-sm md:text-base text-hr-gray-subtext mt-1 mb-4 md:mb-6">Create and organize your company's department structure</p>
+            
+            {/* Departments Container */}
+            <div className="bg-white border border-hr-gray-border rounded-md p-4 md:p-6 min-h-[250px] md:min-h-[300px] mb-4 md:mb-6">
+              {departments.length > 0 ? (
+                <div className="space-y-3 md:space-y-4">
+                  {departments.map(dept => (
+                    <div key={dept.id} className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-hr-gray-border rounded-md">
+                      <div>
+                        <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
+                        {dept.email && <p className="text-xs md:text-sm text-hr-gray-subtext">{dept.email}</p>}
+                      </div>
+                      {dept.lead && <div className="text-xs md:text-sm text-hr-gray-subtext mt-1 md:mt-0">Lead: {dept.lead}</div>}
                     </div>
-                    {dept.lead && <div className="text-xs md:text-sm text-hr-gray-subtext mt-1 md:mt-0">Lead: {dept.lead}</div>}
-                  </div>
-                ))}
-              </div>
-            ) : null}
+                  ))}
+                </div>
+              ) : null}
+              
+              <button 
+                onClick={() => setIsAddSheetOpen(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 md:py-4 mt-4 text-hr-gray-text border border-dashed border-hr-gray-border rounded-md hover:bg-gray-50 transition-colors"
+              >
+                <Plus size={isMobile ? 16 : 20} />
+                <span className="text-sm md:text-base">Add Department</span>
+              </button>
+            </div>
             
-            <button 
-              onClick={() => setIsAddSheetOpen(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 md:py-4 mt-4 text-hr-gray-text border border-dashed border-hr-gray-border rounded-md hover:bg-gray-50 transition-colors"
-            >
-              <Plus size={isMobile ? 16 : 20} />
-              <span className="text-sm md:text-base">Add Department</span>
-            </button>
-          </div>
-          
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-3 md:gap-4">
-            <Button
-              variant="outline"
-              onClick={handleSkip}
-              className="px-4 md:px-8 text-sm md:text-base"
-            >
-              Skip
-            </Button>
-            
-            <Button
-              onClick={handleSaveAndNext}
-              className="bg-hr-blue hover:bg-hr-blue-hover px-4 md:px-8 text-sm md:text-base"
-            >
-              Save & Next
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 md:gap-4">
+              <Button
+                variant="outline"
+                onClick={handleSkip}
+                className="px-4 md:px-8 text-sm md:text-base"
+              >
+                Skip
+              </Button>
+              
+              <Button
+                onClick={handleSaveAndNext}
+                className="bg-hr-blue hover:bg-hr-blue-hover px-4 md:px-8 text-sm md:text-base"
+              >
+                Save & Next
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Add Department Sheet */}
-      <Sheet open={isAddSheetOpen} onOpenChange={setIsAddSheetOpen}>
-        <SheetContent className="sm:max-w-md">
-          <SheetHeader>
-            <SheetTitle>Add Department</SheetTitle>
-          </SheetHeader>
-          <div className="space-y-4 mt-6">
-            <div className="space-y-2">
-              <Label htmlFor="departmentName">Department Name*</Label>
-              <Input
-                id="departmentName"
-                placeholder="Enter department name"
-                value={newDepartment.name}
-                onChange={(e) => setNewDepartment({...newDepartment, name: e.target.value})}
-              />
+        {/* Add Department Sheet */}
+        <Sheet open={isAddSheetOpen} onOpenChange={setIsAddSheetOpen}>
+          <SheetContent className="sm:max-w-md">
+            <SheetHeader>
+              <SheetTitle>Add Department</SheetTitle>
+            </SheetHeader>
+            <div className="space-y-4 mt-6">
+              <div className="space-y-2">
+                <Label htmlFor="departmentName">Department Name*</Label>
+                <Input
+                  id="departmentName"
+                  placeholder="Enter department name"
+                  value={newDepartment.name}
+                  onChange={(e) => setNewDepartment({...newDepartment, name: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="groupEmail">Group email</Label>
+                <Input
+                  id="groupEmail"
+                  type="email"
+                  placeholder="person@example.com"
+                  value={newDepartment.email}
+                  onChange={(e) => setNewDepartment({...newDepartment, email: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="departmentLead">Department Lead</Label>
+                <Input
+                  id="departmentLead"
+                  placeholder="Search employee"
+                  value={newDepartment.lead}
+                  onChange={(e) => setNewDepartment({...newDepartment, lead: e.target.value})}
+                />
+              </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="groupEmail">Group email</Label>
-              <Input
-                id="groupEmail"
-                type="email"
-                placeholder="person@example.com"
-                value={newDepartment.email}
-                onChange={(e) => setNewDepartment({...newDepartment, email: e.target.value})}
-              />
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsAddSheetOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAddDepartment}
+                className="bg-hr-blue hover:bg-hr-blue-hover"
+              >
+                Save
+              </Button>
             </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="departmentLead">Department Lead</Label>
-              <Input
-                id="departmentLead"
-                placeholder="Search employee"
-                value={newDepartment.lead}
-                onChange={(e) => setNewDepartment({...newDepartment, lead: e.target.value})}
-              />
-            </div>
-          </div>
-          
-          <div className="flex justify-end gap-2 mt-6">
-            <Button
-              variant="outline"
-              onClick={() => setIsAddSheetOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddDepartment}
-              className="bg-hr-blue hover:bg-hr-blue-hover"
-            >
-              Save
-            </Button>
-          </div>
-        </SheetContent>
-      </Sheet>
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 };
