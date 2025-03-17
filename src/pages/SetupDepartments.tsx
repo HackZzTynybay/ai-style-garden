@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2, Edit } from 'lucide-react';
 import DepartmentSidebar from '@/components/DepartmentSidebar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,27 +10,98 @@ import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
-
-interface Department {
-  id: string;
-  name: string;
-  email: string;
-  lead: string;
-}
+import { departmentApi, Department } from '@/utils/api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const SetupDepartments = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const queryClient = useQueryClient();
+  
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
-  const [newDepartment, setNewDepartment] = useState({
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     lead: ''
   });
 
-  const handleAddDepartment = () => {
-    if (!newDepartment.name.trim()) {
+  // Fetch departments
+  const { data: departmentsData, isLoading, error } = useQuery({
+    queryKey: ['departments'],
+    queryFn: async () => {
+      const response = await departmentApi.getDepartments();
+      return response.data as Department[];
+    }
+  });
+
+  // Create department mutation
+  const createDepartmentMutation = useMutation({
+    mutationFn: (data: { name: string; email?: string; lead?: string }) => 
+      departmentApi.createDepartment(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['departments'] });
+      setIsAddSheetOpen(false);
+      resetForm();
+      toast({
+        title: "Success",
+        description: `${formData.name} department has been added`,
+      });
+    }
+  });
+
+  // Update department mutation
+  const updateDepartmentMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { name?: string; email?: string; lead?: string } }) => 
+      departmentApi.updateDepartment(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['departments'] });
+      setIsAddSheetOpen(false);
+      resetForm();
+      toast({
+        title: "Success",
+        description: `Department has been updated`,
+      });
+    }
+  });
+
+  // Delete department mutation
+  const deleteDepartmentMutation = useMutation({
+    mutationFn: (id: string) => departmentApi.deleteDepartment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['departments'] });
+      toast({
+        title: "Success",
+        description: "Department has been deleted",
+      });
+    }
+  });
+
+  const resetForm = () => {
+    setFormData({ name: '', email: '', lead: '' });
+    setIsEditMode(false);
+    setSelectedDeptId(null);
+  };
+
+  const handleOpenAddSheet = () => {
+    resetForm();
+    setIsAddSheetOpen(true);
+  };
+
+  const handleOpenEditSheet = (dept: Department) => {
+    setFormData({
+      name: dept.name,
+      email: dept.email || '',
+      lead: dept.lead || ''
+    });
+    setSelectedDeptId(dept.id);
+    setIsEditMode(true);
+    setIsAddSheetOpen(true);
+  };
+
+  const handleFormSubmit = () => {
+    if (!formData.name.trim()) {
       toast({
         title: "Error",
         description: "Department name is required",
@@ -39,34 +110,32 @@ const SetupDepartments = () => {
       return;
     }
 
-    const department = {
-      id: Date.now().toString(),
-      name: newDepartment.name,
-      email: newDepartment.email,
-      lead: newDepartment.lead
-    };
+    if (isEditMode && selectedDeptId) {
+      updateDepartmentMutation.mutate({ 
+        id: selectedDeptId, 
+        data: formData
+      });
+    } else {
+      createDepartmentMutation.mutate(formData);
+    }
+  };
 
-    setDepartments([...departments, department]);
-    setNewDepartment({ name: '', email: '', lead: '' });
-    setIsAddSheetOpen(false);
-    
-    toast({
-      title: "Success",
-      description: `${department.name} department has been added`,
-    });
+  const handleDeleteDepartment = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this department?')) {
+      deleteDepartmentMutation.mutate(id);
+    }
   };
 
   const handleSaveAndNext = () => {
-    // In a real application, we would save the departments to the backend here
     toast({
       title: "Success",
       description: "Departments saved successfully",
     });
-    navigate('/setup-roles'); // Navigate to the next setup step
+    navigate('/setup-roles');
   };
 
   const handleSkip = () => {
-    navigate('/setup-roles'); // Navigate to the next setup step
+    navigate('/setup-roles');
   };
 
   return (
@@ -113,15 +182,39 @@ const SetupDepartments = () => {
             
             {/* Departments Container */}
             <div className="bg-white border border-hr-gray-border rounded-md p-6 min-h-[250px] mb-6">
-              {departments.length > 0 ? (
+              {isLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <p>Loading departments...</p>
+                </div>
+              ) : error ? (
+                <div className="text-center text-red-500">
+                  <p>Error loading departments. Please try again.</p>
+                </div>
+              ) : departmentsData && departmentsData.length > 0 ? (
                 <div className="space-y-3 mb-6">
-                  {departments.map(dept => (
+                  {departmentsData.map(dept => (
                     <div key={dept.id} className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-hr-gray-border rounded-md">
                       <div>
                         <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
                         {dept.email && <p className="text-xs text-hr-gray-subtext">{dept.email}</p>}
                       </div>
-                      {dept.lead && <div className="text-xs text-hr-gray-subtext mt-1 md:mt-0">Lead: {dept.lead}</div>}
+                      <div className="flex items-center mt-2 md:mt-0">
+                        {dept.lead && <div className="text-xs text-hr-gray-subtext mr-4">Lead: {dept.lead}</div>}
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleOpenEditSheet(dept)}
+                        >
+                          <Edit size={16} className="text-hr-gray-text" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDeleteDepartment(dept.id)}
+                        >
+                          <Trash2 size={16} className="text-red-500" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -129,7 +222,7 @@ const SetupDepartments = () => {
               
               {/* Add Department Button - Smaller */}
               <button 
-                onClick={() => setIsAddSheetOpen(true)}
+                onClick={handleOpenAddSheet}
                 className="flex items-center justify-center gap-2 mx-auto py-2 px-4 text-hr-gray-text border border-dashed border-hr-gray-border rounded-md hover:bg-gray-50 transition-colors"
               >
                 <Plus size={16} />
@@ -139,11 +232,14 @@ const SetupDepartments = () => {
           </div>
         </div>
 
-        {/* Add Department Sheet */}
-        <Sheet open={isAddSheetOpen} onOpenChange={setIsAddSheetOpen}>
+        {/* Add/Edit Department Sheet */}
+        <Sheet open={isAddSheetOpen} onOpenChange={(open) => {
+          setIsAddSheetOpen(open);
+          if (!open) resetForm();
+        }}>
           <SheetContent className="sm:max-w-md">
             <SheetHeader>
-              <SheetTitle>Add Department</SheetTitle>
+              <SheetTitle>{isEditMode ? 'Edit Department' : 'Add Department'}</SheetTitle>
             </SheetHeader>
             <div className="space-y-4 mt-6">
               <div className="space-y-2">
@@ -151,8 +247,8 @@ const SetupDepartments = () => {
                 <Input
                   id="departmentName"
                   placeholder="Enter department name"
-                  value={newDepartment.name}
-                  onChange={(e) => setNewDepartment({...newDepartment, name: e.target.value})}
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
                 />
               </div>
               
@@ -162,8 +258,8 @@ const SetupDepartments = () => {
                   id="groupEmail"
                   type="email"
                   placeholder="person@example.com"
-                  value={newDepartment.email}
-                  onChange={(e) => setNewDepartment({...newDepartment, email: e.target.value})}
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                 />
               </div>
               
@@ -172,8 +268,8 @@ const SetupDepartments = () => {
                 <Input
                   id="departmentLead"
                   placeholder="Search employee"
-                  value={newDepartment.lead}
-                  onChange={(e) => setNewDepartment({...newDepartment, lead: e.target.value})}
+                  value={formData.lead}
+                  onChange={(e) => setFormData({...formData, lead: e.target.value})}
                 />
               </div>
             </div>
@@ -181,15 +277,19 @@ const SetupDepartments = () => {
             <div className="flex justify-end gap-2 mt-6">
               <Button
                 variant="outline"
-                onClick={() => setIsAddSheetOpen(false)}
+                onClick={() => {
+                  setIsAddSheetOpen(false);
+                  resetForm();
+                }}
               >
                 Cancel
               </Button>
               <Button
-                onClick={handleAddDepartment}
+                onClick={handleFormSubmit}
                 className="bg-hr-blue hover:bg-hr-blue-hover"
+                disabled={createDepartmentMutation.isPending || updateDepartmentMutation.isPending}
               >
-                Save
+                {createDepartmentMutation.isPending || updateDepartmentMutation.isPending ? 'Saving...' : 'Save'}
               </Button>
             </div>
           </SheetContent>

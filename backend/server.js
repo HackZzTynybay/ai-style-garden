@@ -21,10 +21,12 @@ connectDB();
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const companyRoutes = require('./routes/companies');
+const departmentRoutes = require('./routes/departments');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/departments', departmentRoutes);
 
 const PORT = process.env.PORT || 5000;
 

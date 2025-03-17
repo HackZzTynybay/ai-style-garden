@@ -159,3 +159,47 @@ export const companyApi = {
   updateCompany: (id: string, companyData: any) => 
     fetchApi<CompanyResponse>(`/companies/${id}`, { method: 'PUT', body: companyData }),
 };
+
+export interface Department {
+  id: string;
+  name: string;
+  email: string;
+  lead: string;
+  company: string;
+  createdAt: string;
+}
+
+export interface DepartmentResponse {
+  success: boolean;
+  count?: number;
+  data: Department | Department[];
+  message?: string;
+}
+
+export const departmentApi = {
+  getDepartments: () => 
+    fetchApi<DepartmentResponse>('/departments', { 
+      method: 'GET',
+      requiresAuth: true 
+    }),
+  
+  createDepartment: (departmentData: { name: string; email?: string; lead?: string }) => 
+    fetchApi<DepartmentResponse>('/departments', { 
+      method: 'POST', 
+      body: departmentData,
+      requiresAuth: true 
+    }),
+  
+  updateDepartment: (id: string, departmentData: { name?: string; email?: string; lead?: string }) => 
+    fetchApi<DepartmentResponse>(`/departments/${id}`, { 
+      method: 'PUT', 
+      body: departmentData,
+      requiresAuth: true 
+    }),
+  
+  deleteDepartment: (id: string) => 
+    fetchApi<DepartmentResponse>(`/departments/${id}`, { 
+      method: 'DELETE',
+      requiresAuth: true 
+    }),
+};
