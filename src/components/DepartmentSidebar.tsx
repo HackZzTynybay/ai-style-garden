@@ -12,9 +12,9 @@ const DepartmentSidebar = ({ currentStep }: DepartmentSidebarProps) => {
   const isMobile = useIsMobile();
   
   const stepsContent = (
-    <div className={`flex ${isMobile ? 'flex-row justify-center gap-8' : 'flex-col'}`}>
+    <div className={`flex ${isMobile ? 'flex-row justify-center gap-8' : 'flex-col gap-6'} px-6 py-4`}>
       {/* Departments Step */}
-      <div className="relative flex items-center gap-3 py-4">
+      <div className="relative flex items-center gap-3">
         <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
           currentStep === 'departments' ? 'bg-hr-blue' : 'bg-hr-gray-light'
         }`}>
@@ -29,11 +29,8 @@ const DepartmentSidebar = ({ currentStep }: DepartmentSidebarProps) => {
         </span>
       </div>
       
-      {/* Line connecting steps */}
-      {isMobile ? null : <div className="ml-3 w-px h-10 bg-hr-gray-border" />}
-      
       {/* Roles Step */}
-      <div className="relative flex items-center gap-3 py-4">
+      <div className="relative flex items-center gap-3">
         <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
           currentStep === 'roles' ? 'bg-hr-blue' : 'bg-hr-gray-light'
         }`}>
@@ -48,11 +45,8 @@ const DepartmentSidebar = ({ currentStep }: DepartmentSidebarProps) => {
         </span>
       </div>
       
-      {/* Line connecting steps */}
-      {isMobile ? null : <div className="ml-3 w-px h-10 bg-hr-gray-border" />}
-      
       {/* Employees Step */}
-      <div className="relative flex items-center gap-3 py-4">
+      <div className="relative flex items-center gap-3">
         <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
           currentStep === 'employees' ? 'bg-hr-blue' : 'bg-hr-gray-light'
         }`}>
@@ -85,9 +79,7 @@ const DepartmentSidebar = ({ currentStep }: DepartmentSidebarProps) => {
         <Logo />
       </div>
       
-      <div className="px-6">
-        {stepsContent}
-      </div>
+      {stepsContent}
     </div>
   );
 };

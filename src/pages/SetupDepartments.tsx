@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { useIsMobile } from '@/hooks/use-mobile';
 import { departmentApi, Department } from '@/utils/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent } from '@/components/ui/card';
 
 const SetupDepartments = () => {
   const navigate = useNavigate();
@@ -155,8 +156,8 @@ const SetupDepartments = () => {
             </header>
           )}
           
-          <div className="max-w-3xl mx-auto mt-4 md:mt-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+          <div className="max-w-4xl mx-auto mt-4 md:mt-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
               <div>
                 <h1 className="text-xl md:text-2xl font-semibold text-hr-gray-text">Set Up Your Departments</h1>
                 <p className="text-sm text-hr-gray-subtext mt-1">Create and organize your company's department structure</p>
@@ -180,8 +181,8 @@ const SetupDepartments = () => {
               </div>
             </div>
             
-            {/* Departments Container */}
-            <div className="bg-white border border-hr-gray-border rounded-md p-6 min-h-[250px] mb-6">
+            {/* Departments Grid */}
+            <div className="bg-white rounded-md p-6">
               {isLoading ? (
                 <div className="flex justify-center items-center h-32">
                   <p>Loading departments...</p>
@@ -190,44 +191,56 @@ const SetupDepartments = () => {
                 <div className="text-center text-red-500">
                   <p>Error loading departments. Please try again.</p>
                 </div>
-              ) : departmentsData && departmentsData.length > 0 ? (
-                <div className="space-y-3 mb-6">
-                  {departmentsData.map(dept => (
-                    <div key={dept.id} className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-hr-gray-border rounded-md">
-                      <div>
-                        <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
-                        {dept.email && <p className="text-xs text-hr-gray-subtext">{dept.email}</p>}
-                      </div>
-                      <div className="flex items-center mt-2 md:mt-0">
-                        {dept.lead && <div className="text-xs text-hr-gray-subtext mr-4">Lead: {dept.lead}</div>}
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleOpenEditSheet(dept)}
-                        >
-                          <Edit size={16} className="text-hr-gray-text" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleDeleteDepartment(dept.id)}
-                        >
-                          <Trash2 size={16} className="text-red-500" />
-                        </Button>
-                      </div>
-                    </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  {/* Department Cards */}
+                  {departmentsData && departmentsData.map((dept) => (
+                    <Card key={dept.id} className="border border-hr-gray-border">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-medium text-hr-gray-text">{dept.name}</h3>
+                            {dept.email && (
+                              <p className="text-xs text-hr-gray-subtext mt-1">{dept.email}</p>
+                            )}
+                          </div>
+                          <div className="flex">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => handleOpenEditSheet(dept)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Edit size={16} className="text-hr-gray-text" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleDeleteDepartment(dept.id)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Trash2 size={16} className="text-red-500" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
+                  
+                  {/* Add Department Card */}
+                  <Card 
+                    className="border border-dashed border-hr-gray-border cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={handleOpenAddSheet}
+                  >
+                    <CardContent className="p-4 flex items-center justify-center">
+                      <button className="flex items-center gap-2 text-hr-gray-text">
+                        <Plus size={18} />
+                        <span>Add Department</span>
+                      </button>
+                    </CardContent>
+                  </Card>
                 </div>
-              ) : null}
-              
-              {/* Add Department Button - Smaller */}
-              <button 
-                onClick={handleOpenAddSheet}
-                className="flex items-center justify-center gap-2 mx-auto py-2 px-4 text-hr-gray-text border border-dashed border-hr-gray-border rounded-md hover:bg-gray-50 transition-colors"
-              >
-                <Plus size={16} />
-                <span className="text-sm">Add Department</span>
-              </button>
+              )}
             </div>
           </div>
         </div>

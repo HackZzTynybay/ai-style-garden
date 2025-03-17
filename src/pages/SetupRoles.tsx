@@ -29,8 +29,8 @@ const SetupRoles = () => {
               </header>
             )}
             
-            <div className="max-w-3xl mx-auto mt-4 md:mt-8">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+            <div className="max-w-4xl mx-auto mt-4 md:mt-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                 <div>
                   <h1 className="text-xl md:text-2xl font-semibold text-hr-gray-text">Set Up Roles and Permissions</h1>
                   <p className="text-sm text-hr-gray-subtext mt-1">Define roles and assign permissions for your organization</p>
@@ -54,7 +54,7 @@ const SetupRoles = () => {
                 </div>
               </div>
               
-              <div className="bg-white border border-hr-gray-border rounded-md p-6 min-h-[250px] flex items-center justify-center">
+              <div className="bg-white rounded-md p-6 flex items-center justify-center min-h-[250px]">
                 <p className="text-sm text-hr-gray-subtext">Roles and permissions setup will be implemented here</p>
               </div>
             </div>
