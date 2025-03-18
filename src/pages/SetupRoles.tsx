@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Card, CardContent } from '@/components/ui/card';
-import { departmentApi } from '@/utils/api';
+import { departmentApi, Department } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 
@@ -23,6 +23,9 @@ const SetupRoles = () => {
       return response.data;
     }
   });
+  
+  // Convert departmentsData to array if it's a single object
+  const departments = Array.isArray(departmentsData) ? departmentsData : departmentsData ? [departmentsData] : [];
   
   return (
     <ProtectedRoute>
@@ -80,7 +83,7 @@ const SetupRoles = () => {
                     
                     <div className="flex flex-wrap gap-4">
                       {/* Department Cards */}
-                      {departmentsData && departmentsData.map((dept) => (
+                      {departments.map((dept) => (
                         <Card key={dept.id} className="border border-hr-gray-border w-[180px]">
                           <CardContent className="p-4">
                             <div>
